@@ -1,17 +1,40 @@
 package com.narxoz.rpg;
 
-/**
- * Entry point for Homework 8 — The Haunted Tower: Ascending the Floors.
- *
- * Build your heroes, floors, tower runner, and execute the climb here.
- */
+import com.narxoz.rpg.combatant.Hero;
+import com.narxoz.rpg.floor.CombatFloor;
+import com.narxoz.rpg.floor.RestFloor;
+import com.narxoz.rpg.floor.TowerFloor;
+import com.narxoz.rpg.floor.TrapFloor;
+import com.narxoz.rpg.state.StunnedState;
+import com.narxoz.rpg.tower.TowerRunResult;
+import com.narxoz.rpg.tower.TowerRunner;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 public class Main {
 
     public static void main(String[] args) {
-        // TODO (student): Create at least 2 heroes with different starting states
-        // TODO (student): Create a sequence of ≥ 4 floors using ≥ 3 distinct floor subclasses
-        // TODO (student): Instantiate a tower runner and execute the tower climb
-        // TODO (student): Track and print results (floors cleared, heroes surviving, tower status)
-        // TODO (student): Demonstrate visible state transitions in the output
+        Hero warrior = new Hero("Aragorn", 100, 20, 5);
+        Hero mage = new Hero("Gandalf", 70, 25, 2);
+
+        mage.setState(new StunnedState());
+
+        List<Hero> party = new ArrayList<>(Arrays.asList(warrior, mage));
+
+        List<TowerFloor> floors = new ArrayList<>();
+        floors.add(new CombatFloor());
+        floors.add(new TrapFloor());
+        floors.add(new CombatFloor());
+        floors.add(new RestFloor());
+
+        TowerRunner runner = new TowerRunner(floors);
+        TowerRunResult result = runner.run(party);
+
+        System.out.println("\n--- РЕЗУЛЬТАТЫ ПОХОДА ---");
+        System.out.println("Пройдено этажей: " + result.getFloorsCleared());
+        System.out.println("Выжило героев: " + result.getHeroesSurviving());
+        System.out.println("Башня пройдена до конца: " + (result.isReachedTop() ? "Да" : "Нет"));
     }
 }

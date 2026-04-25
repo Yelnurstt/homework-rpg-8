@@ -1,11 +1,8 @@
 package com.narxoz.rpg.combatant;
 
-/**
- * Represents a player-controlled hero participating in the tower climb.
- *
- * Students: you may extend this class as needed for your implementation.
- * You will need to add a HeroState field and related methods.
- */
+import com.narxoz.rpg.state.HeroState;
+import com.narxoz.rpg.state.NormalState;
+
 public class Hero {
 
     private final String name;
@@ -13,6 +10,7 @@ public class Hero {
     private final int maxHp;
     private final int attackPower;
     private final int defense;
+    private HeroState state; // сост
 
     public Hero(String name, int hp, int attackPower, int defense) {
         this.name = name;
@@ -20,6 +18,7 @@ public class Hero {
         this.maxHp = hp;
         this.attackPower = attackPower;
         this.defense = defense;
+        this.state = new NormalState(); // сост по умл
     }
 
     public String getName()        { return name; }
@@ -28,21 +27,18 @@ public class Hero {
     public int getAttackPower()    { return attackPower; }
     public int getDefense()        { return defense; }
     public boolean isAlive()       { return hp > 0; }
+    public HeroState getState()    { return state; }
 
-    /**
-     * Reduces this hero's HP by the given amount, clamped to zero.
-     *
-     * @param amount the damage to apply; must be non-negative
-     */
-    public void takeDamage(int amount) {
-        hp = Math.max(0, hp - amount);
+    public void setState(HeroState state) {
+        this.state = state;
+        System.out.println(">>> " + name + " переходит в состояние: " + state.getName() + "!");
     }
 
-    /**
-     * Restores this hero's HP by the given amount, clamped to maxHp.
-     *
-     * @param amount the HP to restore; must be non-negative
-     */
+    public void takeDamage(int amount) {
+        int modifiedDamage = state.modifyIncomingDamage(amount);
+        hp = Math.max(0, hp - modifiedDamage);
+    }
+
     public void heal(int amount) {
         hp = Math.min(maxHp, hp + amount);
     }
